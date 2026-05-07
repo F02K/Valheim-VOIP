@@ -40,9 +40,9 @@ $ManagedReferences = @(
 
 $References = @("/reference:" + (Resolve-Path (Join-Path $BepInExDir "core\BepInEx.dll")).Path) + $ManagedReferences
 
-$ConcentusSourceDir = Join-Path $ProjectDir "libs\concentus-v1.2-csharp\concentus-1.2-c-\CSharp\Concentus"
+$ConcentusSourceDir = Join-Path $ProjectDir "libs\concentus-v1.2-csharp\CSharp\Concentus"
 if (!(Test-Path -LiteralPath $ConcentusSourceDir)) {
-    throw "Missing Concentus source at $ConcentusSourceDir"
+    throw "Missing Concentus source at $ConcentusSourceDir. Run .\scripts\install-deps.ps1 first."
 }
 
 $Sources = @()

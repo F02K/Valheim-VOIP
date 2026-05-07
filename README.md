@@ -96,6 +96,7 @@ Valheim dedicated server/
 Build with:
 
 ```powershell
+.\scripts\install-deps.ps1
 .\build.ps1
 ```
 
@@ -103,7 +104,7 @@ The script:
 
 - compiles with the .NET Framework `csc.exe`
 - references assemblies from the adjacent Valheim dedicated server install
-- compiles vendored Concentus source into the plugin DLL
+- compiles locally installed Concentus source into the plugin DLL
 - deploys `ValheimVoip.dll` to `BepInEx/plugins/ValheimVoip`
 
 If the server or game has already loaded the DLL, deployment may write `ValheimVoip.dll.pending`. Stop Valheim and rerun the build or copy the pending DLL over the loaded one.
@@ -138,9 +139,9 @@ src/
 
 ```text
 libs/
-  concentus-v1.2-csharp/
-    ...
   README.md
+scripts/
+  install-deps.ps1
 ```
 
 `Client` owns microphone capture, local send behavior, and playback.
