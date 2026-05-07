@@ -46,7 +46,7 @@ if (!(Test-Path -LiteralPath $ConcentusSourceDir)) {
 }
 
 $Sources = @()
-$Sources += Get-ChildItem -LiteralPath (Join-Path $ProjectDir "src") -Filter "*.cs" | ForEach-Object { $_.FullName }
+$Sources += Get-ChildItem -LiteralPath (Join-Path $ProjectDir "src") -Recurse -Filter "*.cs" | ForEach-Object { $_.FullName }
 $Sources += Get-ChildItem -LiteralPath $ConcentusSourceDir -Recurse -Filter "*.cs" |
     Where-Object { $_.Name -ne "AssemblyInfo.cs" } |
     ForEach-Object { $_.FullName }

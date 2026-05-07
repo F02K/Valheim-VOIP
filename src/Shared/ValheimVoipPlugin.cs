@@ -24,10 +24,12 @@ namespace ValheimVoip
             DontDestroyOnLoad(_runnerObject);
 
             VoiceNetwork network = _runnerObject.AddComponent<VoiceNetwork>();
+            VoiceServer server = _runnerObject.AddComponent<VoiceServer>();
+            VoiceClient client = new VoiceClient();
             VoicePlayback playback = _runnerObject.AddComponent<VoicePlayback>();
             VoiceCapture capture = _runnerObject.AddComponent<VoiceCapture>();
 
-            network.Initialize(playback);
+            network.Initialize(client, server, playback);
             capture.Initialize(network);
 
             Logger.LogInfo(ModName + " " + ModVersion + " loaded");
