@@ -63,7 +63,10 @@ namespace ValheimVoip
             }
             catch (System.Exception ex)
             {
-                ValheimVoipPlugin.Log.LogWarning("Dropped malformed voice packet: " + ex.Message);
+                VoiceLog.WarningRateLimited(
+                    "voice-packet-malformed-" + senderPeerId,
+                    "Dropped malformed voice packet from peer " + senderPeerId + ": " + ex.Message,
+                    5f);
                 return;
             }
 

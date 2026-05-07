@@ -8,7 +8,7 @@ Client code runs on game clients and should not make authoritative decisions.
 
 - `VoiceCapture`: reads Unity microphone data, applies push-to-talk or voice activation, encodes frames.
 - `VoiceClient`: sends encoded frames to the current Valheim server peer and accepts settings only from that server.
-- `VoicePlayback`: decodes received frames and plays spatial audio at the speaker position.
+- `VoicePlayback`: decodes received frames into a per-speaker jitter buffer and plays spatial audio through a streaming `AudioClip`.
 
 ## Server
 
@@ -43,6 +43,7 @@ Client microphone
   -> VoiceNetwork
   -> VoicePlayback
   -> OpusVoiceCodec.Decode
+  -> per-speaker jitter buffer
   -> Unity AudioSource
 ```
 
@@ -57,3 +58,7 @@ Server BepInEx config
 ```
 
 Server settings override client session values during multiplayer. Personal client settings such as local push-to-talk and playback volume remain local.
+
+## Diagnostics
+
+Malformed voice packets, invalid settings sources, unsupported settings versions, and malformed settings packages are logged with rate limits. Settings broadcasts and received settings are also logged at low frequency so server/client sync can be diagnosed without flooding the BepInEx log.

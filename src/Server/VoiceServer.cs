@@ -71,6 +71,7 @@ namespace ValheimVoip
             }
 
             ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, VoiceNetwork.SettingsRpcName, VoiceRuntimeSettings.CreateServerPackage());
+            VoiceLog.InfoRateLimited("voice-settings-broadcast", "Broadcasting server voice settings: " + VoiceRuntimeSettings.CreateServerSummary(), 60f);
         }
     }
 }

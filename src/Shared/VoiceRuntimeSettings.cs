@@ -12,6 +12,7 @@ namespace ValheimVoip
         private static int _frameMilliseconds;
         private static int _opusBitrate;
         private static int _opusComplexity;
+        private static string _lastAppliedSummary = string.Empty;
 
         public static bool Enabled
         {
@@ -50,7 +51,13 @@ namespace ValheimVoip
 
         public static void ClearServerSettings()
         {
+            if (_hasServerSettings)
+            {
+                VoiceLog.InfoRateLimited("voice-settings-cleared", "Cleared server voice settings; using local config until the server syncs again.", 10f);
+            }
+
             _hasServerSettings = false;
+            _lastAppliedSummary = string.Empty;
         }
 
         public static ZPackage CreateServerPackage()
@@ -67,12 +74,14 @@ namespace ValheimVoip
             return package;
         }
 
-        public static void ApplyServerPackage(ZPackage package)
+        public static bool ApplyServerPackage(ZPackage package, out string summary)
         {
+            summary = string.Empty;
             int version = package.ReadInt();
             if (version != 1)
             {
-                return;
+                VoiceLog.WarningRateLimited("voice-settings-version", "Ignored unsupported voice settings package version " + version + ".", 30f);
+                return false;
             }
 
             _enabled = package.ReadBool();
@@ -83,6 +92,33 @@ namespace ValheimVoip
             _opusBitrate = Mathf.Clamp(package.ReadInt(), 6000, 128000);
             _opusComplexity = Mathf.Clamp(package.ReadInt(), 0, 10);
             _hasServerSettings = true;
+            summary = CreateSummary(_enabled, _proximityMeters, _fullVolumeMeters, _sampleRate, _frameMilliseconds, _opusBitrate, _opusComplexity);
+            bool changed = summary != _lastAppliedSummary;
+            _lastAppliedSummary = summary;
+            return changed;
+        }
+
+        public static string CreateServerSummary()
+        {
+            return CreateSummary(
+                VoiceSettings.Enabled.Value,
+                VoiceSettings.ProximityMeters.Value,
+                VoiceSettings.FullVolumeMeters.Value,
+                VoiceSettings.EffectiveSampleRate,
+                VoiceSettings.EffectiveFrameMilliseconds,
+                VoiceSettings.EffectiveOpusBitrate,
+                VoiceSettings.EffectiveOpusComplexity);
+        }
+
+        private static string CreateSummary(bool enabled, float proximityMeters, float fullVolumeMeters, int sampleRate, int frameMilliseconds, int opusBitrate, int opusComplexity)
+        {
+            return "enabled=" + enabled +
+                   ", proximity=" + proximityMeters.ToString("0.#") +
+                   "m, fullVolume=" + fullVolumeMeters.ToString("0.#") +
+                   "m, sampleRate=" + sampleRate +
+                   ", frameMs=" + frameMilliseconds +
+                   ", bitrate=" + opusBitrate +
+                   ", complexity=" + opusComplexity;
         }
 
         private static int SanitizeSampleRate(int rate)

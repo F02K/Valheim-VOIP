@@ -17,13 +17,14 @@ Implemented:
 - Server-side proximity relay
 - Server-authoritative voice settings sync
 - Spatial Unity audio playback
+- Jitter-buffered playback using streaming `AudioClip` output
+- Rate-limited diagnostics for malformed voice packets and settings sync
 - Client / Server / Shared source layout
 
 Not done yet:
 
 - Input device selection
 - HUD transmit/receive indicator
-- Jitter buffer
 - Player mute/deafen UI
 - Polished config migration/versioning
 
@@ -64,6 +65,8 @@ Common client settings:
 - voice activation enabled/disabled
 - voice activation threshold
 - playback volume
+- jitter buffer target duration
+- maximum jitter buffer duration
 
 Common server settings:
 
@@ -162,9 +165,8 @@ Near-term improvements:
 
 - Add microphone device selection
 - Add transmit/receive HUD indicator
-- Replace per-packet `AudioClip` playback with a jitter buffer
 - Add per-player mute/deafen controls
-- Add better logging around malformed packets and settings sync
+- Add packet sequence numbers and loss statistics
 
 Longer-term ideas:
 
