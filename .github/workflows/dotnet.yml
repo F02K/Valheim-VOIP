@@ -1,0 +1,29 @@
+name: .NET
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install dependencies
+        shell: pwsh
+        run: ./scripts/install-deps.ps1
+
+      - name: Restore
+        run: dotnet restore ./ValheimVoip.csproj
+
+      - name: Build
+        run: dotnet build ./ValheimVoip.csproj --configuration Release --no-restore
